@@ -1,5 +1,5 @@
 // src/utils/sentimentAnalysis.js
-import { analyzeSentiment } from './geminiAI';
+import { analyzeSentiment } from './openRouterAI';
 
 // Additional sentiment analysis utilities
 export const getSentimentColor = (sentiment) => {

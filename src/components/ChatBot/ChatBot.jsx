@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send, Heart, ThumbsUp, Laugh, MessageCircle, AlertCircle, RefreshCw, Sparkles, Zap } from 'lucide-react';
 import { useChat } from '../../hooks/useChat';
 import { useAuth } from '../../hooks/useAuth';
-import { resetApiFailure, forceApiRetry } from '../../utils/geminiAI';
+import { resetApiFailure } from '../../utils/openRouterAI';
 import './ChatBot.css';
 
 function ChatBot() {
@@ -58,7 +58,7 @@ function ChatBot() {
 
   // Create a Set to track unique message IDs and prevent duplicates
   const uniqueMessageIds = new Set();
-  
+
   // Process and sort messages by timestamp to ensure proper order, removing duplicates
   let processedMessages = [...messages]
     .filter(msg => {
@@ -92,7 +92,7 @@ function ChatBot() {
     <div className="chatbot-container-v2">
       {/* Animated Background */}
       <div className="chat-bg-animation"></div>
-      
+
       <div className="chat-header-v2">
         <div className="chat-header-content">
           <div className="ai-avatar-small">
@@ -107,7 +107,7 @@ function ChatBot() {
             </p>
           </div>
         </div>
-        <button 
+        <button
           className="retry-api-btn-v2"
           onClick={() => {
             resetApiFailure();
@@ -118,7 +118,7 @@ function ChatBot() {
           <RefreshCw size={18} />
         </button>
       </div>
-      
+
       <div className="chat-messages-v2">
         {chatError && (
           <div className="message-wrapper bot">
@@ -130,10 +130,10 @@ function ChatBot() {
             </div>
           </div>
         )}
-        
+
         {displayMessages.map((message, index) => (
-          <div 
-            key={message.id} 
+          <div
+            key={message.id}
             className={`message-wrapper ${message.sender === 'user' ? 'user' : 'bot'}`}
             style={{ animationDelay: `${index * 0.1}s` }}
           >
@@ -145,7 +145,7 @@ function ChatBot() {
                 </div>
               </div>
             )}
-            
+
             <div className={`message-v2 ${message.sender === 'user' ? 'user-message-v2' : 'bot-message-v2'}`}>
               <div className="message-content-v2">
                 {message.text}
@@ -154,13 +154,13 @@ function ChatBot() {
                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
             </div>
-            
+
             {message.sender === 'user' && (
               <div className="user-avatar">
                 {user?.user_metadata?.avatar_url ? (
-                  <img 
-                    src={user.user_metadata.avatar_url} 
-                    alt="User Avatar" 
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    alt="User Avatar"
                     className="user-avatar-img"
                   />
                 ) : (
@@ -172,7 +172,7 @@ function ChatBot() {
             )}
           </div>
         ))}
-        
+
         {(isLoading || chatLoading || isTyping) && (
           <div className="message-wrapper bot">
             <div className="ai-avatar">
@@ -190,16 +190,16 @@ function ChatBot() {
             </div>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
-      
+
       <div className="quick-replies-v2">
         {quickReplies.map((reply, index) => {
           const IconComponent = reply.icon;
           return (
-            <button 
-              key={index} 
+            <button
+              key={index}
               className="quick-reply-btn-v2"
               onClick={() => handleQuickReply(reply.text)}
               disabled={!user}
@@ -213,7 +213,7 @@ function ChatBot() {
           );
         })}
       </div>
-      
+
       <div className="chat-input-container-v2">
         <div className="input-wrapper">
           <textarea
@@ -225,9 +225,9 @@ function ChatBot() {
             rows="1"
             disabled={!user || isLoading || chatLoading}
           />
-          <button 
+          <button
             id="send-button"
-            onClick={handleSendMessage} 
+            onClick={handleSendMessage}
             className="send-button-v2"
             disabled={!user || isLoading || chatLoading || !inputValue.trim()}
           >

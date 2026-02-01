@@ -1,7 +1,7 @@
 // src/hooks/useChat.js
 import { useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
-import { analyzeSentiment, generateEmpatheticResponse } from '../utils/geminiAI';
+import { analyzeSentiment, generateEmpatheticResponse } from '../utils/openRouterAI';
 
 export const useChat = (userId) => {
   const [messages, setMessages] = useState([]);
@@ -10,8 +10,8 @@ export const useChat = (userId) => {
 
   // Check if environment variables are properly set
   useEffect(() => {
-    if (!import.meta.env.VITE_GEMINI_API_KEY) {
-      console.warn('Gemini API key is not properly configured. AI features will be limited.');
+    if (!import.meta.env.VITE_OPENROUTER_API_KEY || import.meta.env.VITE_OPENROUTER_API_KEY.includes('xxxxxxxxxx')) {
+      console.warn('OpenRouter API key is not properly configured. AI features will be limited.');
     }
   }, []);
 
@@ -82,8 +82,8 @@ export const useChat = (userId) => {
       return;
     }
 
-    if (!import.meta.env.VITE_GEMINI_API_KEY) {
-      setError('AI services are not configured. Please set up your API keys.');
+    if (!import.meta.env.VITE_OPENROUTER_API_KEY || import.meta.env.VITE_OPENROUTER_API_KEY.includes('xxxxxxxxxx')) {
+      setError('AI services are not configured. Please set up your OpenRouter API key.');
       return;
     }
 
@@ -133,8 +133,8 @@ export const useChat = (userId) => {
       }
 
       // Update the message in state with the one from the database (with real ID)
-      setMessages(prev => 
-        prev.map(msg => 
+      setMessages(prev =>
+        prev.map(msg =>
           msg.id === temporaryUserMessageId ? insertedMessage : msg
         )
       );
