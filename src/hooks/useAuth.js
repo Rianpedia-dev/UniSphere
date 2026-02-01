@@ -30,7 +30,7 @@ export const useAuth = () => {
         if (error.code === 'PGRST116') { // Row not found
           // Create profile if it doesn't exist
           if (!isMountedRef.current) return null;
-          
+
           const { data: authUser } = await supabase.auth.getUser();
           if (authUser?.user && isMountedRef.current) {
             const newProfile = {
@@ -151,9 +151,6 @@ export const useAuth = () => {
       password,
       options: {
         data: metadata,
-        emailRedirectTo: import.meta.env.VITE_PRODUCTION_URL 
-          ? `${import.meta.env.VITE_PRODUCTION_URL}/login` 
-          : `${window.location.origin}/login`,
       },
     });
 
@@ -187,7 +184,7 @@ export const useAuth = () => {
       email,
       password,
     });
-    
+
     if (error) throw error;
     return data;
   }, []);

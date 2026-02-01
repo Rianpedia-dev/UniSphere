@@ -15,20 +15,20 @@ export const resetApiFailure = () => {
   apiFailed = false;
 };
 
-// Simple fallback sentiment analysis
+// Analisis sentimen sederhana (Bahasa Indonesia)
 function simpleSentimentAnalysis(text) {
-  const positiveWords = ['happy', 'good', 'great', 'excellent', 'wonderful', 'amazing', 'fantastic', 'love', 'like', 'enjoy', 'pleased', 'satisfied', 'blessed', 'grateful', 'thankful', 'joy', 'excited', 'thrilled', 'delighted'];
-  const negativeWords = ['sad', 'bad', 'terrible', 'awful', 'hate', 'dislike', 'angry', 'frustrated', 'anxious', 'worried', 'stressed', 'depressed', 'upset', 'disappointed', 'hurt', 'lonely', 'overwhelmed', 'struggling', 'tired', 'exhausted'];
+  const positiveWords = ['senang', 'bahagia', 'baik', 'bagus', 'hebat', 'luar biasa', 'mantap', 'suka', 'nikmat', 'puas', 'bersyukur', 'terima kasih', 'ceria', 'semangat', 'lega'];
+  const negativeWords = ['sedih', 'buruk', 'jelek', 'marah', 'kesal', 'frustasi', 'cemas', 'khawatir', 'stres', 'depresi', 'kecewa', 'sakit', 'sepi', 'lelah', 'capek', 'bingung', 'takut'];
 
   let positiveCount = 0;
   let negativeCount = 0;
-  
+
   const words = text.toLowerCase().split(/\s+/);
   words.forEach(word => {
     if (positiveWords.includes(word)) positiveCount++;
     if (negativeWords.includes(word)) negativeCount++;
   });
-  
+
   if (positiveCount > negativeCount) return 'positive';
   if (negativeCount > positiveCount) return 'negative';
   return 'neutral';
@@ -53,7 +53,7 @@ export const analyzeSentiment = async (text) => {
         messages: [
           {
             role: "system",
-            content: "Analyze the sentiment of the following text and respond with only one word: positive, negative, or neutral."
+            content: "Analisis sentimen dari teks berikut dan jawab hanya dengan satu kata dalam bahasa Inggris: positive, negative, atau neutral."
           },
           {
             role: "user",
@@ -89,7 +89,14 @@ export const generateEmpatheticResponse = async (userMessage, conversationHistor
     const messages = [
       {
         role: "system",
-        content: "You are an empathetic AI mental health support assistant. Respond in a compassionate, understanding, and supportive way. Keep responses concise but meaningful. Focus on acknowledging the user's feelings and providing helpful guidance."
+        content: `Anda adalah seorang ahli kesehatan mental profesional (psikolog AI) di platform UniSphere. Tugas Anda adalah memberikan dukungan emosional yang mendalam, profesional, namun tetap hangat dan empati. 
+
+Gunakan pengetahuan psikologi untuk:
+1. Mengakui dan memvalidasi perasaan pengguna dengan tepat (active listening).
+2. Memberikan analisis tenang dan suportif terhadap masalah mereka.
+3. YANG PALING PENTING: Selalu berikan setidaknya satu atau dua aktivitas atau latihan praktis yang spesifik untuk meredakan stres/kecemasan sesuai dengan kondisi yang dialami user (misal: teknik pernapasan 4-7-8, grounding 5-4-3-2-1, journaling, atau aktivitas fisik ringan).
+
+Pastikan respon Anda ringkas, terstruktur dengan baik, dan selalu menggunakan Bahasa Indonesia yang sopan dan menenangkan. Hindari diagnosa medis formal, fokus pada dukungan kesejahteraan emosional.`
       }
     ];
 
@@ -128,22 +135,25 @@ export const generateEmpatheticResponse = async (userMessage, conversationHistor
     return data.choices[0].message.content.trim();
   } catch (error) {
     console.error('OpenRouter Chat Error:', error);
-    apiFailed = true;
+    // Only set apiFailed if it's a real network/auth error, not just a model error
+    if (error.message.includes('failed') || error.message.includes('API')) {
+      apiFailed = true;
+    }
     return getFallbackResponse(userMessage);
   }
 };
 
 function getFallbackResponse(userMessage) {
   const lowerMessage = userMessage.toLowerCase();
-  
-  if (lowerMessage.includes('stressed') || lowerMessage.includes('stress') || lowerMessage.includes('overwhelm')) {
-    return "I can sense you're feeling stressed. It's completely normal to feel this way. Have you tried taking a few deep breaths or going for a short walk?";
-  } else if (lowerMessage.includes('sad') || lowerMessage.includes('depress') || lowerMessage.includes('unhappy')) {
-    return "I'm sorry you're feeling down. Remember that difficult emotions are temporary. Have you considered talking to someone you trust?";
-  } else if (lowerMessage.includes('anxious') || lowerMessage.includes('worry')) {
-    return "Anxiety can be overwhelming, but you're not alone. Try to focus on your breathing and take things one step at a time.";
-  } else if (lowerMessage.includes('happy') || lowerMessage.includes('great')) {
-    return "I'm glad to hear something positive! It's wonderful that you're feeling good.";
+
+  if (lowerMessage.includes('stres') || lowerMessage.includes('tertekan') || lowerMessage.includes('pusing')) {
+    return "Saya mengerti Anda sedang merasa stres. Hal ini sangat wajar terjadi. Sudahkah Anda mencoba menarik napas dalam-dalam atau beristirahat sejenak?";
+  } else if (lowerMessage.includes('sedih') || lowerMessage.includes('kecewa') || lowerMessage.includes('menangis')) {
+    return "Saya turut sedih mendengarnya. Ingatlah bahwa perasaan sulit ini bersifat sementara. Anda tidak sendirian di sini.";
+  } else if (lowerMessage.includes('cemas') || lowerMessage.includes('khawatir') || lowerMessage.includes('takut')) {
+    return "Kecemasan memang bisa terasa berat, tapi saya di sini untuk mendengarkan. Cobalah fokus pada pernapasan Anda secara perlahan.";
+  } else if (lowerMessage.includes('senang') || lowerMessage.includes('bahagia') || lowerMessage.includes('hebat')) {
+    return "Senang sekali mendengarnya! Teruslah pelihara energi positif ini ya.";
   }
-  return "I'm here to listen. Could you tell me more about what you're feeling?";
+  return "Saya di sini untuk mendengarkan Anda. Bisa ceritakan lebih lanjut apa yang sedang Anda rasakan?";
 }

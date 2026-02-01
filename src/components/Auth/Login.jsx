@@ -15,7 +15,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [localError, setLocalError] = useState('');
   const [showConfirmationMessage, setShowConfirmationMessage] = useState(false);
-  
+
   const mountedRef = useRef(true);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validasi input sebelum submit
     if (!email || !password) {
       if (mountedRef.current) {
@@ -37,7 +37,7 @@ function Login() {
       }
       return;
     }
-    
+
     // Validasi format email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -46,64 +46,57 @@ function Login() {
       }
       return;
     }
-    
+
     if (!isLogin && password !== confirmPassword) {
       if (mountedRef.current) {
         setLocalError('Passwords do not match');
       }
       return;
     }
-    
+
     if (!isLogin && password.length < 6) {
       if (mountedRef.current) {
         setLocalError('Password should be at least 6 characters');
       }
       return;
     }
-    
+
     if (mountedRef.current) {
       setLocalError('');
       setLoading(true);
       setShowConfirmationMessage(false);
     }
-    
+
     try {
       if (isLogin) {
         console.log('Attempting to sign in with:', email); // Debug log
         await signIn(email, password);
         console.log('Sign in completed successfully'); // Debug log
-        
+
         // Set login success to trigger navigation effect
         if (mountedRef.current) {
           setLoginSuccess(true);
         }
       } else {
         console.log('Attempting to sign up with:', email); // Debug log
-        const result = await signUp(email, password, { 
+        const result = await signUp(email, password, {
           username: email.split('@')[0],
           full_name: email.split('@')[0],
           email: email
         });
         console.log('Sign up completed:', result); // Debug log
-        
-        if (result?.user?.email_confirmed_at === null) {
-          if (mountedRef.current) {
-            setShowConfirmationMessage(true);
-            setLoading(false);
-          }
-        } else {
-          // Set login success to trigger navigation effect
-          if (mountedRef.current) {
-            setLoginSuccess(true);
-          }
+
+        // Set login success directly upon successful sign-up
+        if (mountedRef.current) {
+          setLoginSuccess(true);
         }
       }
     } catch (err) {
       console.error('Authentication error:', err); // Debug log
       console.error('Error details:', err.message, err?.status, err?.code); // More detailed error log
-      
+
       let errorMessage = 'An unexpected error occurred';
-      
+
       // Handle different types of errors
       if (err?.message) {
         errorMessage = err.message;
@@ -112,12 +105,12 @@ function Login() {
       } else if (err?.error) {
         errorMessage = err.error;
       }
-      
+
       // Pastikan komponen masih mounted sebelum mengupdate state
       if (mountedRef.current) {
         setLocalError(errorMessage);
         setLoading(false);
-        
+
         if (err.message && err.message.includes('Email not confirmed')) {
           setShowConfirmationMessage(true);
         }
@@ -134,7 +127,7 @@ function Login() {
           navigate('/');
         }
       }, 100);
-      
+
       return () => clearTimeout(navTimer);
     }
   }, [loginSuccess, navigate]);
@@ -166,7 +159,7 @@ function Login() {
             {isLogin ? 'Enter your credentials to continue' : 'Create your account and explore'}
           </p>
         </div>
-        
+
         {/* Error Message */}
         {(authError?.message || localError) && !showConfirmationMessage && (
           <div className="error-message-futuristic">
@@ -174,16 +167,9 @@ function Login() {
             <span>{authError?.message || localError}</span>
           </div>
         )}
-        
-        {/* Confirmation Message */}
-        {showConfirmationMessage && (
-          <div className="confirmation-message-futuristic">
-            <Mail size={28} className="pulse-icon" />
-            <h3>Periksa Email Anda!</h3>
-            <p>Kami telah mengirimkan tautan konfirmasi. Silakan verifikasi email Anda sebelum masuk.</p>
-          </div>
-        )}
-        
+
+        {/* Confirmation Message Removed */}
+
         <form onSubmit={handleSubmit} className="form-futuristic">
           {/* Email Field */}
           <div className="form-group-futuristic">
@@ -205,7 +191,7 @@ function Login() {
               <div className="input-glow"></div>
             </div>
           </div>
-          
+
           {/* Password Field */}
           <div className="form-group-futuristic">
             <label htmlFor="password" className="form-label-futuristic">
@@ -235,7 +221,7 @@ function Login() {
               <div className="input-glow"></div>
             </div>
           </div>
-          
+
           {/* Confirm Password Field */}
           {!isLogin && (
             <div className="form-group-futuristic">
@@ -258,11 +244,11 @@ function Login() {
               </div>
             </div>
           )}
-          
+
           {/* Submit Button */}
           {!loading ? (
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn-futuristic"
               key="login-submit-btn"
             >
@@ -274,8 +260,8 @@ function Login() {
               <div className="btn-glow"></div>
             </button>
           ) : (
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn-futuristic btn-loading"
               disabled
               key="login-loading-btn"
@@ -290,7 +276,7 @@ function Login() {
             </button>
           )}
         </form>
-        
+
         {/* Switch Auth Mode */}
         <div className="auth-switch-futuristic">
           <div className="divider">
@@ -299,8 +285,8 @@ function Login() {
           <p className="switch-text">
             {isLogin ? "Don't have an account?" : "Already have an account?"}
           </p>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="switch-btn-futuristic"
             onClick={() => {
               if (loading) return;

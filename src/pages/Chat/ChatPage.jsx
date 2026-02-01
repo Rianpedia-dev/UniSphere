@@ -11,7 +11,7 @@ function ChatPage() {
       <div className="page-gradient-orb orb-1"></div>
       <div className="page-gradient-orb orb-2"></div>
       <div className="page-gradient-orb orb-3"></div>
-      
+
       {/* Header */}
       <header className="chat-page-header">
         <div className="header-content-wrapper">
@@ -31,12 +31,10 @@ function ChatPage() {
           </div>
         </div>
       </header>
-      
+
       {/* Main Chat Area */}
       <main className="chat-page-main">
-        <div className="chatbot-wrapper">
-          <ChatBot />
-        </div>
+        <ChatBot />
       </main>
 
       {/* Footer Info */}

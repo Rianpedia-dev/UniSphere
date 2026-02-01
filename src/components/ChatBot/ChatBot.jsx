@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Heart, ThumbsUp, Laugh, MessageCircle, AlertCircle, RefreshCw, Sparkles, Zap } from 'lucide-react';
+import { Send, Heart, ThumbsUp, Laugh, MessageCircle, AlertCircle, RefreshCw, Sparkles, Zap, Brain } from 'lucide-react';
 import { useChat } from '../../hooks/useChat';
 import { useAuth } from '../../hooks/useAuth';
 import { resetApiFailure } from '../../utils/openRouterAI';
@@ -14,10 +14,10 @@ function ChatBot() {
   const messagesEndRef = useRef(null);
 
   const quickReplies = [
-    { text: "I'm feeling stressed", icon: Heart, gradient: "from-red-500 to-pink-500" },
-    { text: "I need advice", icon: MessageCircle, gradient: "from-blue-500 to-cyan-500" },
-    { text: "Just chatting", icon: ThumbsUp, gradient: "from-green-500 to-emerald-500" },
-    { text: "I'm happy", icon: Laugh, gradient: "from-yellow-500 to-orange-500" }
+    { text: "Saya merasa cemas", icon: Heart },
+    { text: "Butuh saran dukungan", icon: MessageCircle },
+    { text: "Hanya ingin bercerita", icon: ThumbsUp },
+    { text: "Mengelola stres harian", icon: Sparkles }
   ];
 
   const handleSendMessage = async () => {
@@ -80,7 +80,7 @@ function ChatBot() {
   if (processedMessages.length === 0 && !chatLoading && !chatError && user) {
     processedMessages = [{
       id: 'initial-message-' + Date.now(),
-      text: "Hello! I'm your AI emotional support companion. How are you feeling today?",
+      text: "Halo! Saya adalah pendamping emosional AI Anda. Bagaimana perasaan Anda hari ini?",
       sender: 'bot',
       timestamp: new Date()
     }, ...processedMessages];
@@ -97,13 +97,13 @@ function ChatBot() {
         <div className="chat-header-content">
           <div className="ai-avatar-small">
             <div className="avatar-glow"></div>
-            <Sparkles className="avatar-icon" />
+            <Brain className="avatar-icon" />
           </div>
           <div className="header-text">
-            <h2>AI Emotional Support</h2>
+            <h2>Dukungan Emosional AI</h2>
             <p className="status-text">
               <span className="status-dot"></span>
-              Online & Ready
+              Online & Siap Membantu
             </p>
           </div>
         </div>
@@ -141,7 +141,7 @@ function ChatBot() {
               <div className="ai-avatar">
                 <div className="avatar-glow"></div>
                 <div className="avatar-inner">
-                  <Zap size={20} />
+                  <Brain size={22} />
                 </div>
               </div>
             )}
@@ -178,7 +178,7 @@ function ChatBot() {
             <div className="ai-avatar">
               <div className="avatar-glow pulsing"></div>
               <div className="avatar-inner">
-                <Zap size={20} />
+                <Brain size={22} />
               </div>
             </div>
             <div className="message-v2 bot-message-v2">
